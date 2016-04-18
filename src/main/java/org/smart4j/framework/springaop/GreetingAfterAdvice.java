@@ -11,7 +11,7 @@ import java.lang.reflect.Method;
 
 /**
  * Created by snow on 2016/4/18.
- * Í¨¹ı½Ó¿ÚÊµÏÖµÄºóÖÃÍ¨Öª
+ * é€šè¿‡æ¥å£å®ç°çš„åç½®é€šçŸ¥
  */
 @Component
 public class GreetingAfterAdvice implements AfterReturningAdvice {
@@ -20,37 +20,46 @@ public class GreetingAfterAdvice implements AfterReturningAdvice {
         System.out.println("After method");
     }
     public static void main(String[] args){
-        ProxyFactory proxyFactory = new ProxyFactory();/*´´½¨´úÀí¹¤³§*/
-        proxyFactory.setTarget(new GreetingImpl());/*ÉäÈëÄ¿±êÀà¶ÔÏó*/
-        /*Ìí¼ÓÇ°ÖÃ¡¢ºóÖÃÍ¨Öª*/
+        ProxyFactory proxyFactory = new ProxyFactory();/*åˆ›å»ºä»£ç†å·¥å‚*/
+        proxyFactory.setTarget(new GreetingImpl());/*å°„å…¥ç›®æ ‡ç±»å¯¹è±¡*/
+        /*æ·»åŠ å‰ç½®ã€åç½®é€šçŸ¥*/
         proxyFactory.addAdvice(new GreetingBeforeAdvice());
         proxyFactory.addAdvice(new GreetingAfterAdvice());
 
         /**
-         * ´Ó´úÀí¹¤³§ÖĞ»ñÈ¡´úÀí£¬²¢µ÷ÓÃ´úÀíµÄ·½·¨
-         * Èç¹û´úÀí¹¤³§ÖĞÓĞ¶à¸öÄ¿±êÀà¶ÔÏóÔõÃ´°ì ?? @Todo
-         * Ó¦¸ÃÊÇÃ¿¸öProxyFactory¶ÔÓ¦Ò»¸öÄ¿±êÀà¶ÔÏó
+         * ä»ä»£ç†å·¥å‚ä¸­è·å–ä»£ç†ï¼Œå¹¶è°ƒç”¨ä»£ç†çš„æ–¹æ³•
+         * å¦‚æœä»£ç†å·¥å‚ä¸­æœ‰å¤šä¸ªç›®æ ‡ç±»å¯¹è±¡æ€ä¹ˆåŠ ?? @Todo
+         * åº”è¯¥æ˜¯æ¯ä¸ªProxyFactoryå¯¹åº”ä¸€ä¸ªç›®æ ‡ç±»å¯¹è±¡
          */
         Greeting greeting = (Greeting) proxyFactory.getProxy();
         greeting.sayHello("Jack");
 
-        //Ê¹ÓÃÅäÖÃÎÄ¼şµÄ·½Ê½
+        System.out.println("é€šè¿‡é…ç½®æ–‡ä»¶çš„æ–¹å¼å®ç°AOP");
+
+        //ä½¿ç”¨é…ç½®æ–‡ä»¶çš„æ–¹å¼
         /**
-         *  »ñÈ¡Spring context
-         *  ½«applicationContext.xml·ÅÈëresources×ÊÔ´Ä¿Â¼ÏÂ¾ÍÄÜÔËĞĞ
-         *  ·ÅÈëspringaopµ±Ç°°üÏÂ£¬ÔõÃ´Ö¸¶¨Â·¾¶? @Todo
+         *  è·å–Spring context
+         *  å°†applicationContext.xmlæ”¾å…¥resourcesèµ„æºç›®å½•ä¸‹å°±èƒ½è¿è¡Œ
+         *  æ”¾å…¥springaopå½“å‰åŒ…ä¸‹ï¼Œæ€ä¹ˆæŒ‡å®šè·¯å¾„? @Todo
          */
         ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
-        //greetingProxy ¾ÍÊÇProxyFactoryBeanµÄÊµÀı£¬Ò²¾ÍÊÇÍ¨¹ıÊµÏÖ½Ó¿Ú·½Ê½ÖĞµÄProxyFactory
-        Greeting greetingProxy = (Greeting) context.getBean("greetingProxy");
+        //greetingProxy å°±æ˜¯ProxyFactoryBeançš„å®ä¾‹ï¼Œä¹Ÿå°±æ˜¯é€šè¿‡å®ç°æ¥å£æ–¹å¼ä¸­çš„ProxyFactory
+        Greeting greetingImpleProxy = (Greeting) context.getBean("greetingProxy");
         greeting.sayHello("Jack");
+
+        /**
+         * å°†ç›®æ ‡ç±»å‘ä¸Šè½¬å‹ä¸ºApologyæ¥å£(å¼•å…¥å¢å¼ºå¸¦æ¥çš„ç‰¹æ€§ï¼Œä¹Ÿå°±æ˜¯"æ¥å£åŠ¨æ€å®ç°"åŠŸèƒ½)
+         */
+        Apology apology = (Apology) greetingImpleProxy;
+        apology.saySorry("Snow");
+
 
     }
 }
 
 /**
- * ¸¸½Ó¿ÚGreeting²»ĞèÒªÌí¼Ó×¢½âComponent£¬ÊµÏÖÀàÌí¼Ó¾ÍÄÜ·ÅÈëbeanÈİÆ÷ÖĞ
- * ²»È»ÊµÏÖÁËºÜ¶à½Ó¿Ú£¬Æñ²»µÃÃ¿¸ö½Ó¿Ú¶¼Ìí¼Ó×¢½â?
+ * çˆ¶æ¥å£Greetingä¸éœ€è¦æ·»åŠ æ³¨è§£Componentï¼Œå®ç°ç±»æ·»åŠ å°±èƒ½æ”¾å…¥beanå®¹å™¨ä¸­
+ * ä¸ç„¶å®ç°äº†å¾ˆå¤šæ¥å£ï¼Œå²‚ä¸å¾—æ¯ä¸ªæ¥å£éƒ½æ·»åŠ æ³¨è§£?
  * @author openforever
  */
 @Component
@@ -58,5 +67,16 @@ class GreetingImpl implements Greeting {
     @Override
     public void sayHello(String name) {
         System.out.println("Hello! " + name);
+        /*å†™ä¸­æ–‡å±…ç„¶å…¨æ˜¯?????*/
+        //throw new RuntimeException("Error , is interceptor by greetingThrowAdvice? ");
     }
+}
+
+/**
+ * å¼•å…¥å¢å¼ºï¼šå¯¹ç±»è¿›è¡Œå¢å¼º
+ * ä¸å†ä»£ç ä¸­è®©GreetingImplç›´æ¥å»å®ç°è¿™ä¸ªæ¥å£ï¼Œè€Œæ˜¯åœ¨ç¨‹åºè¿è¡Œçš„æ—¶å€™åŠ¨æ€çš„å®ç°ä»–
+ * å¦‚æœåœ¨ä»£ç ä¸­å®ç°è¿™ä¸ªæ¥å£ï¼Œå°±ä¸€å®šä¼šæ”¹å†™GreetingImplè¿™ä¸ªç±»ï¼Œå¦‚æœä¸æƒ³æ”¹å˜è¿™ä¸ªç±»å‘¢
+ */
+interface Apology{
+    void saySorry(String name);
 }
