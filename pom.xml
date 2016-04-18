@@ -6,10 +6,10 @@
 
     <groupId>org.smart4j</groupId>
     <artifactId>smart-framework</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.0</version>
 
-    <!--smart4j是一个Java Web框架，一定会依赖Servlet,JSP,JSTL等-->
     <dependencies>
+        <!--smart4j是一个Java Web框架，一定会依赖Servlet,JSP,JSTL等-->
         <!--添加Servlet依赖-->
         <dependency>
             <groupId>javax.servlet</groupId>
