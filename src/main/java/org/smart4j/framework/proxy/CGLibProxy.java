@@ -43,6 +43,7 @@ public class CGLibProxy implements MethodInterceptor {
      * @return
      * @throws Throwable
      */
+    @Override
     public Object intercept(Object obj, Method method, Object[] args, MethodProxy proxy) throws Throwable{
         before();
         Object result = proxy.invokeSuper(obj, args);
