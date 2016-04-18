@@ -13,7 +13,7 @@ import java.net.URLEncoder;
  * @author openforever
  * @since 1.0.0
  */
-public class CodecUtil {
+public final class CodecUtil {
     private static final Logger LOGGER = LoggerFactory.getLogger(CodecUtil.class);
 
     /**
