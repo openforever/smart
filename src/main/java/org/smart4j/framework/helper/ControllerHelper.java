@@ -61,4 +61,15 @@ public final class ControllerHelper {
             }
         }
     }
+
+    /**
+     * 根据指定请求方法和请求路径构造Request对象，然后从map中返回对应的handler对象
+     * @param requestMethod
+     * @param requestPath
+     * @return handler
+     */
+    public static Handler getHandler(String requestMethod, String requestPath){
+        Request request = new Request(requestMethod, requestPath);
+        return ACTION_MAP.get(request);
+    }
 }

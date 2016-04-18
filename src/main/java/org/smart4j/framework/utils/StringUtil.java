@@ -19,4 +19,8 @@ public class StringUtil {
         }
         return StringUtils.isNotEmpty(str);
     }
+
+    public static String[] splitString(String str, String delimiter) {
+        return str.split(delimiter);
+    }
 }
