@@ -108,6 +108,17 @@
             <artifactId>cglib</artifactId>
             <version>3.1</version>
         </dependency>
+        <!--spring相关的依赖-->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aop</artifactId>
+            <version>4.2.0.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>4.2.0.RELEASE</version>
+        </dependency>
 
     </dependencies>
 </project>

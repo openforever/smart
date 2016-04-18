@@ -2,6 +2,7 @@ package org.smart4j.framework.springaop;
 
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
+import org.springframework.stereotype.Component;
 
 /**
  * Created by snow on 2016/4/18.
@@ -11,6 +12,7 @@ import org.aopalliance.intercept.MethodInvocation;
  * @author openforever
  * @since 1.0.0
  */
+@Component
 public class GreetingAroundAdvice implements MethodInterceptor {
     @Override
     public Object invoke(MethodInvocation methodInvocation) throws Throwable {
