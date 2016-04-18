@@ -48,6 +48,11 @@ public class GreetingAfterAdvice implements AfterReturningAdvice {
     }
 }
 
+/**
+ * 父接口Greeting不需要添加注解Component，实现类添加就能放入bean容器中
+ * 不然实现了很多接口，岂不得每个接口都添加注解?
+ * @author openforever
+ */
 @Component
 class GreetingImpl implements Greeting {
     @Override
