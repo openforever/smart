@@ -1,8 +1,11 @@
 package org.smart4j.framework.helper;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.smart4j.framework.annotation.Aspect;
 import org.smart4j.framework.proxy.AspectProxy;
 import org.smart4j.framework.proxy.Proxy;
+import org.smart4j.framework.proxy.ProxyFactory;
 
 import java.lang.annotation.Annotation;
 import java.util.*;
@@ -13,6 +16,35 @@ import java.util.*;
  * 通过ProxyFactory.createProxy方法来创建代理对象，最后将其放入Bean Map中
  */
 public final class AopHelper {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AopHelper.class);
+
+    /**
+     * 获取代理类及其目标类集合的映射关系，进一步获取目标类与代理对象列表的映射关系，进而遍历这个映射关系
+     * 从中获取目标类与代理对象列表，调用ProxyFactory.createProxy方法获取代理对象，调用BeanHelper.setBean方法
+     * 将该对象重新放入Bean Map中
+     */
+    static {
+        try {
+            Map<Class<?>, Set<Class<?>>> proxyMap = createProxyMap();
+            Map<Class<?>, List<Proxy>> targetMap = createTargetMap(proxyMap);
+
+            for (Map.Entry<Class<?>, List<Proxy>> targetEntry : targetMap.entrySet()){
+                /*目标类，代理类对象列表*/
+                Class<?> targetClass = targetEntry.getKey();
+                List<Proxy> proxyList = targetEntry.getValue();
+
+                /*根据目标类和一组Proxy接口实现，创建实现这些接口的代理类对象*/
+                Object proxy = ProxyFactory.createProxy(targetClass, proxyList);
+                /*将目标类和对应的代理类对象装入bean容器中*/
+                BeanHelper.setBean(targetClass, proxy);
+            }
+        } catch (IllegalAccessException e) {
+            LOGGER.error("aop failure : IllegalAccessException ");
+        } catch (InstantiationException e) {
+            LOGGER.error("aop failure : InstantiationException ");
+        }
+    }
 
     /**
      * 获取Aspect注解中设置的注解类，返回该注解修饰的所有类set集合
