@@ -10,12 +10,25 @@
     <!-- 扫描指定的包(将带有Component等注解的类自动定义为Spring Bean) -->
     <context:component-scan base-package="org.smart4j.framework"></context:component-scan>
 
+    <!--配置一个切面Advisor(切面)封装了Advice(增强)和Pointcut(切点)
+        拦截匹配条件在AOP中就叫切点，就是基于表达式的拦截条件-->
+    <bean id="greetingAdvisor" class="org.springframework.aop.support.RegexpMethodPointcutAdvisor">
+        <property name="advice" ref="greetingAroundAdvice"/><!--配置增强或通知-->
+        <!--切点，切面应用的地方,对这些切点进行增强, 对GreetingImpl类中good开头的方法增强-->
+        <property name="pattern" value="org.smart4j.framework.springaop.GreetingImpl.good.*"/>
+    </bean>
+
 
     <!--配置一个代理, ProxyFactoryBean取代前面接口实现的ProxyFactory-->
     <bean id="greetingProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
         <!--需要代理的接口-->
-        <property name="interfaces" value="org.smart4j.framework.proxy.Greeting"/>
-        <!--接口实现类 这里使用的是ref，应该是引用的bean容器中的bean?，使用value就会报错-->
+        <property name="interfaces" >
+            <list>
+                <value>org.smart4j.framework.proxy.Greeting</value>
+                <value>org.smart4j.framework.springaop.Apology</value><!--不直接在代码层面上实现的接口-->
+            </list>
+        </property>
+        <!--接口实现类 这里使用的是ref，，使用value就会报错-->
         <property name="target" ref="greetingImpl"/>
         <!--拦截器的名称(也就是增强类、通知类的名称) 使用Spring+2.5的"Bean扫描"特性
             无需在配置文件中不断添加bean id="xxx" class="xxx"
@@ -24,8 +37,14 @@
             <list>
                 <value>greetingAroundAdvice</value>
                 <value>greetingThrowAdvice</value>
+                <value>greetingIntroAdvice</value><!--引入增强类-->
+                <value>greetingAdvisor</value><!--切面, 将增强或通知封装到了切面中-->
             </list>
         </property>
+        <!--代理目标类:
+            默认为false，也就是代理接口， 此时就用的JDK动态代理
+            如果为true, 就用的CGLib动态代理-->
+        <property name="proxyTargetClass" value="true"/>
     </bean>
 
 </beans>

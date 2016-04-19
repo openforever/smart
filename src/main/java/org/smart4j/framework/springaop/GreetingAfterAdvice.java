@@ -32,7 +32,7 @@ public class GreetingAfterAdvice implements AfterReturningAdvice {
          * 应该是每个ProxyFactory对应一个目标类对象
          */
         Greeting greeting = (Greeting) proxyFactory.getProxy();
-        greeting.sayHello("Jack");
+        //greeting.sayHello("Jack");
 
         System.out.println("通过配置文件的方式实现AOP");
 
@@ -44,13 +44,20 @@ public class GreetingAfterAdvice implements AfterReturningAdvice {
          */
         ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
         //greetingProxy 就是ProxyFactoryBean的实例，也就是通过实现接口方式中的ProxyFactory
-        Greeting greetingImpleProxy = (Greeting) context.getBean("greetingProxy");
-        greeting.sayHello("Jack");
+        GreetingImpl greetingImplProxy = (GreetingImpl) context.getBean("greetingProxy");
+        try {
+            greetingImplProxy.sayHello("Jack");
+            /*使用ThrowsAdvice，方法抛出了异常，还是需要捕获，不然程序就结束了
+            * 此时ThrowsAdvice执行了，但是由于抛出了异常AfterAdvice没有执行*/
+        } catch (Exception e) {
+            System.out.println("caught runtimeException");
+        }
+        greetingImplProxy.goodMorning("Jie");
 
         /**
          * 将目标类向上转型为Apology接口(引入增强带来的特性，也就是"接口动态实现"功能)
          */
-        Apology apology = (Apology) greetingImpleProxy;
+        Apology apology = (Apology) greetingImplProxy;
         apology.saySorry("Snow");
 
 
@@ -65,10 +72,18 @@ public class GreetingAfterAdvice implements AfterReturningAdvice {
 @Component
 class GreetingImpl implements Greeting {
     @Override
-    public void sayHello(String name) {
+    public void sayHello(String name) throws RuntimeException{
         System.out.println("Hello! " + name);
         /*写中文居然全是?????*/
-        //throw new RuntimeException("Error , is interceptor by greetingThrowAdvice? ");
+        throw new RuntimeException("Error , is interceptor by greetingThrowAdvice? ");
+    }
+
+    public void goodMorning(String name){
+        System.out.println("Good Morning !" + name);
+    }
+
+    public void goodNight(String name){
+        System.out.println("Good Night !" + name);
     }
 }
 

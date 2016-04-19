@@ -22,13 +22,13 @@ public class GreetingThrowAdvice implements ThrowsAdvice{
      * @param method
      * @param args
      * @param target
-     * @param e
+     * @param subClass
      */
-    public void afterThrowing(Method method, Object[] args, Object target, Exception e){
+    public void afterThrowing(Method method, Object[] args, Object target, Throwable subClass){
         System.out.println("-------------Throw Exception-------------");
         System.out.println("Target Class: " + target.getClass().getName());
         System.out.println("Method Name: " + method.getName());
-        System.out.println("Exception Message: " + e.getMessage());
+        System.out.println("Exception Message: " + subClass.getMessage());
         System.out.println("-----------------------------------------");
     }
 }
