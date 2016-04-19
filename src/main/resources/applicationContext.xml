@@ -11,7 +11,12 @@
     <context:component-scan base-package="org.smart4j.framework"></context:component-scan>
 
     <!--配置一个切面Advisor(切面)封装了Advice(增强)和Pointcut(切点)
-        拦截匹配条件在AOP中就叫切点，就是基于表达式的拦截条件-->
+        拦截匹配条件在AOP中就叫切点，就是基于表达式的拦截条件
+        其他的切面类：
+        DefaultPointcutAdvisor: 默认切面，可扩展他来自定义切面
+        NameMatchMethodPointcutAdvisor: 根据方法名称进行匹配的切面
+        StaticMethodMatcherPointcutAdvisor: 用于匹配静态方法的切面
+        缺点：随着项目的扩大，代理配置会越来越多，配置的重复劳动就多了，麻烦切容易出错，使用自动生成代理-->
     <bean id="greetingAdvisor" class="org.springframework.aop.support.RegexpMethodPointcutAdvisor">
         <property name="advice" ref="greetingAroundAdvice"/><!--配置增强或通知-->
         <!--切点，切面应用的地方,对这些切点进行增强, 对GreetingImpl类中good开头的方法增强-->

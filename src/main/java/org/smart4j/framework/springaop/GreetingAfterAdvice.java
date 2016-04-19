@@ -52,7 +52,7 @@ public class GreetingAfterAdvice implements AfterReturningAdvice {
         } catch (Exception e) {
             System.out.println("caught runtimeException");
         }
-        greetingImplProxy.goodMorning("Jie");
+       // greetingImplProxy.goodMorning("Jie");
 
         /**
          * 将目标类向上转型为Apology接口(引入增强带来的特性，也就是"接口动态实现"功能)
