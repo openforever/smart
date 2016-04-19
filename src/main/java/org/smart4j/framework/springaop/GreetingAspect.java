@@ -3,7 +3,13 @@ package org.smart4j.framework.springaop;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Before;
 import org.springframework.stereotype.Component;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * Created by snow on 2016/4/19.
@@ -35,6 +41,20 @@ public class GreetingAspect {
         return result;
     }
 
+    /**
+     * 拦截指定的注解的方法
+     * annotation(定义需要拦截的注解名)
+     * 如果有匹配的类包含多个匹配的方法，可以给方法添加注解，然后拦截指定注解的方法
+     * 相关注解：
+     * Before, After, Around, AfterThrowing(抛出增强), DeclareParents(引入增强）
+     * AfterReturning(返回后增强),也可以理解为Finally增强,比After更晚些
+     */
+    @Before("@annotation(org.smart4j.framework.springaop.Tag)")
+    public Object before(ProceedingJoinPoint pjp) throws Throwable {
+        before();
+        return pjp.proceed();
+    }
+
     private void after() {
         System.out.println("After AspectJ");
     }
@@ -42,4 +62,10 @@ public class GreetingAspect {
     private void before() {
         System.out.println("Before AspectJ");
     }
+}
+
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+@interface Tag{
+
 }

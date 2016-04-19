@@ -119,6 +119,12 @@
             <artifactId>spring-context</artifactId>
             <version>4.2.0.RELEASE</version>
         </dependency>
+        <!--spring集成Aspectj的的切点表达式-->
+        <dependency>
+            <groupId>aspectj</groupId>
+            <artifactId>aspectjrt</artifactId>
+            <version>1.5.0</version>
+        </dependency>
 
     </dependencies>
 </project>
