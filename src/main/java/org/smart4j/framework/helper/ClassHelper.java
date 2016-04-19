@@ -4,6 +4,7 @@ import org.smart4j.framework.annotation.Controller;
 import org.smart4j.framework.annotation.Service;
 import org.smart4j.framework.utils.ClassUtil;
 
+import java.lang.annotation.Annotation;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -37,9 +38,29 @@ public class ClassHelper {
      * 获取应用包名下的所有Service类
      */
     public static Set<Class<?>> getServiceClassSet(){
+        return getClassSetByAnnotation(Service.class);
+    }
+
+    /**
+     * 获取应用包名下的所有Controller类
+     */
+    public static Set<Class<?>> getControllerClassSet(){
+        return getClassSetByAnnotation(Controller.class);
+    }
+
+    /*需要获取扩展了AspectProxy抽象类的所有具体类，此外，还需要获取带有Aspect注解的所有类
+    * instanceof判断一个对象实例是否是一个类或接口(或子类子接口)的实例  子 --> 父
+    * isAssignableFrom 判断类A是不是类B相同或者是类B的父类或接口  父 --> 子
+    * */
+    /**
+     * 获取应用包名下某父类(或接口)的所有子类(或实现类)
+     * @param superClass
+     */
+    public static Set<Class<?>> getClassSetBySuper(Class<?> superClass){
         Set<Class<?>> classSet = new HashSet<Class<?>>();
         for (Class<?> clazz : CLASS_SET){
-            if (clazz.isAnnotationPresent(Service.class)){
+            /*找到superClass的所有子类或者实现类*/
+            if (superClass.isAssignableFrom(clazz) && !superClass.equals(clazz)){
                 classSet.add(clazz);
             }
         }
@@ -47,12 +68,13 @@ public class ClassHelper {
     }
 
     /**
-     * 获取应用包名下的所有Controller类
+     * 获取应用包名下带有某注解的所有类
+     * @param annotationClass
      */
-    public static Set<Class<?>> getControllerClassSet(){
+    public static Set<Class<?>> getClassSetByAnnotation(Class<? extends Annotation> annotationClass){
         Set<Class<?>> classSet = new HashSet<Class<?>>();
         for (Class<?> clazz : CLASS_SET){
-            if (clazz.isAnnotationPresent(Controller.class)){
+            if (clazz.isAnnotationPresent(annotationClass)){
                 classSet.add(clazz);
             }
         }
