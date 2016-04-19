@@ -2,12 +2,10 @@ package org.smart4j.framework.helper;
 
 import org.smart4j.framework.annotation.Aspect;
 import org.smart4j.framework.proxy.AspectProxy;
+import org.smart4j.framework.proxy.Proxy;
 
 import java.lang.annotation.Annotation;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by snow on 2016/4/19.
@@ -48,5 +46,33 @@ public final class AopHelper {
             }
         }
         return proxyMap;
+    }
+
+    /**
+     * 根据代理类与目标类集合之间的映射关系，分析出目标类与代理对象列表之间的映射关系
+     * @param proxyMap
+     * @return
+     */
+    private static Map<Class<?>, List<Proxy>> createTargetMap(Map<Class<?>, Set<Class<?>>> proxyMap)
+            throws IllegalAccessException, InstantiationException {
+        Map<Class<?>, List<Proxy>> targetMap = new HashMap<Class<?>, List<Proxy>>();
+        for (Map.Entry<Class<?>, Set<Class<?>>> proxyEntry : proxyMap.entrySet()){
+            /*一个代理类对应一个目标集合*/
+            Class<?> proxyClass = proxyEntry.getKey();
+            Set<Class<?>> targetClassSet = proxyEntry.getValue();/*目标类集合*/
+            for (Class<?> targetClass : targetClassSet){
+                /*获取代理类对象*/
+                Proxy proxy = (Proxy) proxyClass.newInstance();
+                /*一个目标类对应一个代理类对象列表，这里为什么用List而不是Set*/
+                if (targetMap.containsKey(targetClass)){
+                    targetMap.get(targetClass).add(proxy);
+                }else {
+                    List<Proxy> proxyList = new ArrayList<Proxy>();
+                    proxyList.add(proxy);
+                    targetMap.put(targetClass, proxyList);
+                }
+            }
+        }
+        return targetMap;
     }
 }
