@@ -4,6 +4,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
+import org.aspectj.lang.annotation.DeclareParents;
 import org.springframework.stereotype.Component;
 
 import java.lang.annotation.ElementType;
@@ -55,6 +56,15 @@ public class GreetingAspect {
         return pjp.proceed();
     }
 
+    /**
+     * 引入增强:增强目标类value,运行时动态实现Apology接口
+     * 无需修改value的代码，让其实现Apology接口，单独为该接口提供一个实现类defaultImpl,来做value想做的事情
+     * value:目标类
+     * defaultImpl:引入接口的默认实现类
+     */
+    @DeclareParents(value = "org.smart4j.framework.springaop.GreetingImpl", defaultImpl = ApologyImpl.class)
+    private Apology apology;
+
     private void after() {
         System.out.println("After AspectJ");
     }
@@ -68,4 +78,12 @@ public class GreetingAspect {
 @Retention(RetentionPolicy.RUNTIME)
 @interface Tag{
 
+}
+
+class ApologyImpl implements Apology{
+
+    @Override
+    public void saySorry(String name) {
+        System.out.println("Sorry! " + name);
+    }
 }
