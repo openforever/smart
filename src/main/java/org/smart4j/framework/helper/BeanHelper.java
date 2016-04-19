@@ -13,7 +13,7 @@ import java.util.Set;
  * @author openforever
  * @since 1.0.0
  */
-public class BeanHelper {
+public final class BeanHelper {
     /**
      * 定义Bean映射(用于存放Bean类与Bean实例的映射关系)
      */
