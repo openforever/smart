@@ -11,7 +11,12 @@
     <context:component-scan base-package="org.smart4j.framework"></context:component-scan>
 
     <!--配置一个切面Advisor(切面)封装了Advice(增强)和Pointcut(切点)
-        拦截匹配条件在AOP中就叫切点，就是基于表达式的拦截条件-->
+        拦截匹配条件在AOP中就叫切点，就是基于表达式的拦截条件
+        其他的切面类：
+        DefaultPointcutAdvisor: 默认切面，可扩展他来自定义切面
+        NameMatchMethodPointcutAdvisor: 根据方法名称进行匹配的切面
+        StaticMethodMatcherPointcutAdvisor: 用于匹配静态方法的切面
+        缺点：随着项目的扩大，代理配置会越来越多，配置的重复劳动就多了，麻烦切容易出错，使用自动生成代理-->
     <bean id="greetingAdvisor" class="org.springframework.aop.support.RegexpMethodPointcutAdvisor">
         <property name="advice" ref="greetingAroundAdvice"/><!--配置增强或通知-->
         <!--切点，切面应用的地方,对这些切点进行增强, 对GreetingImpl类中good开头的方法增强-->
@@ -47,4 +52,26 @@
         <property name="proxyTargetClass" value="true"/>
     </bean>
 
+    <!--Spring AOP自动代理：根据bean名称自动生成代理的工具
+        这里不能定义代理接口，也就是interfaces属性，根本不知道这些bean到底实现了多少接口
+        只能代理类，不能代理接口-->
+    <bean class="org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator">
+        <!--只为后缀为Impl的bean生成代理, 匹配目标类，要匹配方法就要考虑切面和切点-->
+        <property name="beanNames" value="*Impl"/>
+        <property name="interceptorNames" value="greetingAroundAdvice"/><!--配置拦截器，增强或者通知-->
+        <!--是否对代理生成策略进行优化,默认为false
+            true: 如果该类实现了接口，就代理接口(使用JDK动态代理), 没有接口，就代理类(CGLib动态代理)
+            不像proxyTargetClass属性那样，强制代理类(true)，而不考虑代理接口的方式 -->
+        <property name="optimize" value="true"/>
+        <!--GCLib创建代理的速度较慢，创建后运行的速度快，JDK刚好相反
+            如果在运行时不断用CGLib去创建代理，系统的性能会大打折扣，建议在系统初始化的时候用CGLib去创建代理
+            放入Spring的ApplicationContext中以备后用-->
+    </bean>
+
+    <!-- <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator">
+         <property name="optimize" value="true"/>
+     </bean>
+     无需在配置代理，该类可以扫描所有的切面类，并为其自动生成代理
+     在spring配置文件中仍然会存在大量的切面配置，如果想拦截指定注解的方法，必须扩展DefaultPointcutAdvisor类
+     自定义一个切面类，然后在spring配置文件中进行切面配置-->
 </beans>
