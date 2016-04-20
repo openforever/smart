@@ -14,7 +14,7 @@ public class SequenceA implements Sequence {
     public static void main(String[] args){
         /*idea运行一个单独的类，居然都会编译整个项目*/
         Sequence sequence = new SequenceA();
-        /*多个线程共享同一个序列号生成器,创建线程, 不同线程间number是连着的*/
+        /*多个线程共享同一个序列号生成器,创建线程, 线程不安全，有重复的数字等*/
         for (int i = 0; i < 3; i++){
             new ClientThread(sequence).start();
         }
