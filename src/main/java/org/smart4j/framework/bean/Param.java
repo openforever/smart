@@ -21,6 +21,11 @@ public class Param {
     /*一个表单中，所有的参数可分为两类：表单参数和文件参数*/
     private List<FormParam> formParams;
     private List<FileParam> fileParams;
+    private Map<String, Object> paramMap;/* 该属性应该删除@Todo*/
+
+    public Param(Map<String, Object> paramMap){
+        this.paramMap = paramMap;
+    }
 
     public Param(List<FormParam> formParams) {
         this.formParams = formParams;

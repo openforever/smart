@@ -7,6 +7,13 @@ import org.apache.commons.lang3.StringUtils;
  * 字符串工具类
  */
 public class StringUtil {
+
+    /*字符串分隔符  空格 */
+    public static final String SEPARATOR = String.valueOf((char) 29);
+    public static void main(String[] args){
+        System.out.println((char) 29);
+    }
+
     /*判断字符串是否为空,并去掉字符串末尾空白符*/
     public static boolean isNotEmpty(String str) {
         return !isEmpty(str);
