@@ -3,9 +3,11 @@ package org.smart4j.framework.helper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smart4j.framework.annotation.Aspect;
+import org.smart4j.framework.annotation.Service;
 import org.smart4j.framework.proxy.AspectProxy;
 import org.smart4j.framework.proxy.Proxy;
 import org.smart4j.framework.proxy.ProxyFactory;
+import org.smart4j.framework.proxy.TransactionProxy;
 
 import java.lang.annotation.Annotation;
 import java.util.*;
@@ -66,17 +68,8 @@ public final class AopHelper {
      */
     private static Map<Class<?>, Set<Class<?>>> createProxyMap(){
         Map<Class<?>, Set<Class<?>>> proxyMap = new HashMap<Class<?>, Set<Class<?>>>();
-        /*获取切面类代理的所有子类*/
-        Set<Class<?>> proxyClassSet = ClassHelper.getClassSetBySuper(AspectProxy.class);
-        for (Class<?> proxyClass : proxyClassSet){
-            if (proxyClass.isAnnotationPresent(Aspect.class)){
-                /*获取子代理类的Aspect注解*/
-                Aspect aspect = proxyClass.getAnnotation(Aspect.class);
-                /*获取Aspect注解中设置的注解类，返回该注解修饰的所有类set集合*/
-                Set<Class<?>> targetClassSet = createTargetClassSet(aspect);
-                proxyMap.put(proxyClass, targetClassSet);
-            }
-        }
+        addAspectProxy(proxyMap);
+        addTransactionProxy(proxyMap);
         return proxyMap;
     }
 
@@ -106,5 +99,27 @@ public final class AopHelper {
             }
         }
         return targetMap;
+    }
+
+    private static void addAspectProxy(Map<Class<?>, Set<Class<?>>> proxyMap){
+        /*获取AspectProxy的所有子类或实现类*/
+        Set<Class<?>> proxyClassSet = ClassHelper.getClassSetBySuper(AspectProxy.class);
+        for (Class<?> proxyClass : proxyClassSet){
+            /*如果实现类中有切面注解*/
+            if (proxyClass.isAnnotationPresent(Aspect.class)){
+                /*获取实现类中的Aspect注解*/
+                Aspect aspect = proxyClass.getAnnotation(Aspect.class);
+                /*返回该aspect切面注解修饰的所有类的集合*/
+                Set<Class<?>> targetClassSet = createTargetClassSet(aspect);
+                proxyMap.put(proxyClass, targetClassSet);
+            }
+        }
+    }
+
+    private static void addTransactionProxy(Map<Class<?>, Set<Class<?>>> proxyMap){
+        /*返回service注解修饰的所有类*/
+        Set<Class<?>> serviceClassSet = ClassHelper.getClassSetByAnnotation(Service.class);
+        /* 事务注解是方法级别的，这里居然是事务注解为key，service注解修饰的所有类为value@Todo*/
+        proxyMap.put(TransactionProxy.class, serviceClassSet);
     }
 }
