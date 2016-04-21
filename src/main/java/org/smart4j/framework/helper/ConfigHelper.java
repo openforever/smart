@@ -31,6 +31,10 @@ public final class ConfigHelper {
         return PropsUtil.getString(CONFIG_PROPS, ConfigConstant.JDBC_PASSWORD);
     }
 
+    public static int getAppUploadLimit(){
+        /*提供默认值为10，即10MB。如果不在smart.properties文件中提供该配置就是默认值*/
+        return PropsUtil.getInt(CONFIG_PROPS, ConfigConstant.APP_UPLOAD_LIMIT, 10);
+    }
     /**
      * 获取应用基础包名
      * @return
